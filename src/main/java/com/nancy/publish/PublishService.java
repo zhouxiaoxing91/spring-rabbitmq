@@ -1,4 +1,4 @@
-package com.dingcheng.confirms.publish;
+package com.nancy.publish;
 
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

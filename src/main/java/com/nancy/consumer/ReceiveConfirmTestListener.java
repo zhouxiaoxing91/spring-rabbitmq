@@ -1,4 +1,4 @@
-package com.dingcheng.confirms.consumer;
+package com.nancy.consumer;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;

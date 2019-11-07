@@ -1,4 +1,4 @@
-package com.dingcheng.confirms.publish;
+package com.nancy.publish;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package com.dingcheng.confirms.callback;
+package com.nancy.callback;
 
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate.ReturnCallback;
