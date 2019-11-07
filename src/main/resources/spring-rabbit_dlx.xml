@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/rabbit
+    http://www.springframework.org/schema/rabbit/spring-rabbit-1.4.xsd">
+
+	<rabbit:connection-factory
+			id="connectionFactory"
+			host="${rabbit.host}"
+			port="${rabbit.port}"
+			username="${rabbit.username}"
+			password="${rabbit.password}"
+			publisher-confirms="true"
+	/>
+
+	<rabbit:admin connection-factory="connectionFactory" ignore-declaration-exceptions="true" />
+
+	<!-- 正常队列 -->
+	<!-- 5s过期 -->
+	<rabbit:queue name="common-queue_5s">
+		<rabbit:queue-arguments>
+			<entry key="x-message-ttl" value="5000" value-type="java.lang.Long" />
+			<entry key="x-dead-letter-exchange" value="dlx-exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead-letter-queue_5s" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	<!-- 15s过期 -->
+	<rabbit:queue name="common-queue_15s">
+		<rabbit:queue-arguments>
+			<entry key="x-message-ttl" value="15000" value-type="java.lang.Long" />
+			<entry key="x-dead-letter-exchange" value="dlx-exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead-letter-queue_15s" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	<!-- 30s过期 -->
+	<rabbit:queue name="common-queue_30s">
+		<rabbit:queue-arguments>
+			<entry key="x-message-ttl" value="30000" value-type="java.lang.Long" />
+			<entry key="x-dead-letter-exchange" value="dlx-exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead-letter-queue_30s" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	<!-- 45s过期 -->
+	<rabbit:queue name="common-queue_45s">
+		<rabbit:queue-arguments>
+			<entry key="x-message-ttl" value="45000" value-type="java.lang.Long" />
+			<entry key="x-dead-letter-exchange" value="dlx-exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead-letter-queue_45s" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	<!-- 50s过期 -->
+	<rabbit:queue name="common-queue_50s">
+		<rabbit:queue-arguments>
+			<entry key="x-message-ttl" value="50000" value-type="java.lang.Long" />
+			<entry key="x-dead-letter-exchange" value="dlx-exchange" />
+			<entry key="x-dead-letter-routing-key" value="dead-letter-queue_50s" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	<!-- 正常路由 -->
+	<rabbit:direct-exchange name="common-exchange" durable="false" id="common-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="common-queue_5s" />
+			<rabbit:binding queue="common-queue_15s" />
+			<rabbit:binding queue="common-queue_30s" />
+			<rabbit:binding queue="common-queue_45s" />
+			<rabbit:binding queue="common-queue_50s" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+
+	<!-- 死信队列 -->
+	<rabbit:queue name="dead-letter-queue_5s" />
+	<rabbit:queue name="dead-letter-queue_15s" />
+	<rabbit:queue name="dead-letter-queue_30s" />
+	<rabbit:queue name="dead-letter-queue_45s" />
+	<rabbit:queue name="dead-letter-queue_50s" />
+	<rabbit:direct-exchange name="dlx-exchange" durable="false" id="dlx-exchange">
+		<rabbit:bindings>
+			<rabbit:binding queue="dead-letter-queue_5s" />
+			<rabbit:binding queue="dead-letter-queue_15s" />
+			<rabbit:binding queue="dead-letter-queue_30s" />
+			<rabbit:binding queue="dead-letter-queue_45s" />
+			<rabbit:binding queue="dead-letter-queue_50s" />
+		</rabbit:bindings>
+	</rabbit:direct-exchange>
+	
+	<!-- 配置consumer, 监听的类和queue的对应关系 -->
+	<rabbit:listener-container
+		connection-factory="connectionFactory" acknowledge="manual" concurrency="10">
+		<rabbit:listener queues="dead-letter-queue_5s" ref="receiveConfirmTestListener" />
+		<rabbit:listener queues="dead-letter-queue_15s" ref="receiveConfirmTestListener" />
+		<rabbit:listener queues="dead-letter-queue_30s" ref="receiveConfirmTestListener" />
+		<rabbit:listener queues="dead-letter-queue_45s" ref="receiveConfirmTestListener" />
+		<rabbit:listener queues="dead-letter-queue_50s" ref="receiveConfirmTestListener" />
+	</rabbit:listener-container>
+
+</beans>
