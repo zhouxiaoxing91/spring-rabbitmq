@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service("rabbitTemplatePublishService")
 public class RabbitTemplatePublishService {
 	@Autowired
-	private RabbitTemplate rmqpTemplate;
+	private RabbitTemplate amqpTemplate;
 
 	public void send(String exchange, String routingKey, Object obj) {
 		String msgId = UUID.randomUUID().toString();
@@ -22,6 +22,6 @@ public class RabbitTemplatePublishService {
 				.setCorrelationId(msgId.getBytes()).build();
 		CorrelationData date = new CorrelationData(msgId);
 		// TODO 将 msgId 与 message 的关系保存起来,例如放到缓存中
-		rmqpTemplate.send(exchange, routingKey, message, date);
+		amqpTemplate.send(exchange, routingKey, message, date);
 	}
 }
